@@ -1,3 +1,7 @@
+import fetch from "node-fetch"
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export const getExpirationTimestamp = async (expiry) => {
     const today = new Date()
@@ -16,20 +20,24 @@ export const isTokenActive = (expiry) => {
     }
 }
 
-export const getOAuthToken = async (obtainedCode) => {
+export const getOAuthToken = async (code) => {
+  try {
     let response = await fetch('https://www.figma.com/api/oauth/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          client_id: clientId,
-          client_secret: clientSecret,
-          redirect_uri: redirectUri,
-          code: obtainedCode,
+          client_id: process.env.CLIENT_ID,
+          client_secret: process.env.CLIENT_SECRET,
+          redirect_uri: process.env.REDIRECT_URI,
+          code: code,
           grant_type: 'authorization_code'
         })
       })
     let data = response.json()
     return data
+  } catch (err) {
+    console.log(err)
+  }
 }
