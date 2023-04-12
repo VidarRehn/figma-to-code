@@ -8,7 +8,9 @@ import express from 'express'
 import * as dotenv from 'dotenv'
 import inquirer from "inquirer"
 
-import { getExpirationTimestamp, isTokenActive, getOAuthToken, getDocumentFrames, writeFiles } from "./utils.js"
+import { getExpirationTimestamp, isTokenActive } from "./utils.js"
+import { getOAuthToken, getDocumentFrames } from "./fetch.js"
+import { writeFiles } from "./handlers.js"
 
 dotenv.config()
 const app = express()

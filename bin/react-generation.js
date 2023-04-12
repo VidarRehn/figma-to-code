@@ -14,11 +14,3 @@ export const reactTemplate = (componentName) => {
     export default ${componentName}
     `)
 }  
-
-export const cssTemplate = (content) => {
-    return (`
-    .container {
-        ${content}
-    }
-    `)
-}
