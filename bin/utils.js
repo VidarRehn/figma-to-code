@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import * as dotenv from 'dotenv'
+import * as prettier from 'prettier'
 import fs from 'fs-extra'
-import path from 'path'
 
 dotenv.config()
 
@@ -142,9 +142,11 @@ export const generateCss = async (json) => {
   return cssString
 }
 
-export const writeAndFormatFile = async (filepath, code) => {
+export const writeAndFormatFile = async (filepath, code, fileType) => {
   try {
     await fs.outputFile(filepath, code);
+    const formattedCode = prettier.format(code, { parser: fileType });
+    await fs.outputFile(filepath, formattedCode);
     console.log(`file created successfully!`);
   } catch (error) {
     console.error(error);

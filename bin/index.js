@@ -9,7 +9,6 @@ import * as dotenv from 'dotenv'
 import inquirer from "inquirer"
 import fs from 'fs-extra'
 import path from 'path'
-import prettier from 'prettier'
 
 import { getExpirationTimestamp, isTokenActive, getOAuthToken, getDocumentFrames, makePascalCase, generateCss, writeAndFormatFile } from "./utils.js"
 import { reactTemplate, cssTemplate } from './templates.js'
@@ -88,6 +87,9 @@ yargs(hideBin(process.argv))
                 message: 'Select the component you want to use',
                 choices: components.map(comp => comp.name)
               })
+
+              // här borde vi kolla om min frame har children och isf om man vill skapa egna komponenter för dessa
+
               // hämta komponent-data och sätt namnet pascal case
               const componentData = components.find(comp => comp.name === chosenComponent)
               const componentName = makePascalCase(chosenComponent)
@@ -105,13 +107,10 @@ yargs(hideBin(process.argv))
               const componentFilePath = path.join(componentsDir, `${componentName}.jsx`)
               const styleFilePath = path.join(componentsDir, `styles.module.css`)
               // skapa dina filer
-              //json
-              await writeAndFormatFile(jsonFilePath, JSON.stringify(componentData))
-              // react jsx
-              await writeAndFormatFile(componentFilePath, reactTemplate(componentData))
-              //css module
+              await writeAndFormatFile(jsonFilePath, JSON.stringify(componentData), 'json')
+              await writeAndFormatFile(componentFilePath, reactTemplate(componentName), 'babel')
               const css = await generateCss(componentData)  
-              await writeAndFormatFile(styleFilePath, cssTemplate(css))
+              await writeAndFormatFile(styleFilePath, cssTemplate(css), 'css')
 
             } else {
               console.log('The document ID is not set. Please run "ftc set-document"')
