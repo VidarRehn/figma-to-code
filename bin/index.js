@@ -5,10 +5,14 @@ import { hideBin } from 'yargs/helpers'
 import Configstore from "configstore"
 import open from "open"
 import express from 'express'
-import fetch from "node-fetch"
 import * as dotenv from 'dotenv'
+import inquirer from "inquirer"
+import fs from 'fs-extra'
+import path from 'path'
+import prettier from 'prettier'
 
-import { getExpirationTimestamp, isTokenActive, getOAuthToken } from "./utils.js"
+import { getExpirationTimestamp, isTokenActive, getOAuthToken, getDocumentFrames, makePascalCase, generateCss, writeAndFormatFile } from "./utils.js"
+import { reactTemplate, cssTemplate } from './templates.js'
 
 dotenv.config()
 const app = express()
@@ -51,19 +55,67 @@ yargs(hideBin(process.argv))
 
 yargs(hideBin(process.argv))
   .command({
-      command: 'document',
-      describe: 'get figma doc',
+      command: 'set-document',
+      describe: 'Set the Figma document you would like to access',
+      handler: async () => {
+        const documentId = await inquirer.prompt({
+          message: 'What is your Figma Document ID?',
+          name: 'document_id',
+          demandOption: true,
+          describe: 'Which Figma file are you trying to access',
+          type: 'String'
+        })
+        config.set({documentId})
+      }
+  }).parse()
+
+yargs(hideBin(process.argv))
+  .command({
+      command: 'list',
+      describe: 'get your Figma components',
       handler: async () => {
         const userAccess = config.get('userAccess')
         if (userAccess) {
           if (isTokenActive(userAccess.expiry)){
-            const response = await fetch(`https://api.figma.com/v1/files/${process.env.DOCUMENT_ID}`, {
-              headers: {
-                'Authorization': `Bearer ${userAccess.token}`
+            if (config.has('documentId')){
+              const {document_id} = config.get('documentId')
+              // hämta data från Figma
+              const components = await getDocumentFrames(document_id, userAccess.token)
+              // fråga användare vilken komponents de vill använda
+              const { chosenComponent } = await inquirer.prompt({
+                type: 'list',
+                name: 'chosenComponent',
+                message: 'Select the component you want to use',
+                choices: components.map(comp => comp.name)
+              })
+              // hämta komponent-data och sätt namnet pascal case
+              const componentData = components.find(comp => comp.name === chosenComponent)
+              const componentName = makePascalCase(chosenComponent)
+              // skapa directory för att spara din komponent
+              const jsonDir = './data';
+              if (!fs.existsSync(jsonDir)) {
+                fs.mkdirSync(jsonDir);
               }
-            })
-            const data = await response.json()
-            console.log(data)
+              const componentsDir = `./src/components/${componentName}`
+              if (!fs.existsSync(componentsDir)) {
+                  fs.mkdirSync(componentsDir, { recursive: true });
+              }
+              // namnge dina filer
+              const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
+              const componentFilePath = path.join(componentsDir, `${componentName}.jsx`)
+              const styleFilePath = path.join(componentsDir, `styles.module.css`)
+              // skapa dina filer
+              //json
+              await writeAndFormatFile(jsonFilePath, JSON.stringify(componentData))
+              // react jsx
+              await writeAndFormatFile(componentFilePath, reactTemplate(componentData))
+              //css module
+              const css = await generateCss(componentData)  
+              await writeAndFormatFile(styleFilePath, cssTemplate(css))
+
+            } else {
+              console.log('The document ID is not set. Please run "ftc set-document"')
+            }
           } else {
             console.log('Your access token has expired. Please use "ftc login" to re-authenticate yourself')
           }
