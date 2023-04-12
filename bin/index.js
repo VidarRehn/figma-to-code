@@ -7,11 +7,8 @@ import open from "open"
 import express from 'express'
 import * as dotenv from 'dotenv'
 import inquirer from "inquirer"
-import fs from 'fs-extra'
-import path from 'path'
 
-import { getExpirationTimestamp, isTokenActive, getOAuthToken, getDocumentFrames, makePascalCase, generateCss, writeAndFormatFile } from "./utils.js"
-import { reactTemplate, cssTemplate } from './templates.js'
+import { getExpirationTimestamp, isTokenActive, getOAuthToken, getDocumentFrames, writeFiles } from "./utils.js"
 
 dotenv.config()
 const app = express()
@@ -81,36 +78,44 @@ yargs(hideBin(process.argv))
               // hämta data från Figma
               const components = await getDocumentFrames(document_id, userAccess.token)
               // fråga användare vilken komponents de vill använda
-              const { chosenComponent } = await inquirer.prompt({
+              const { chosen } = await inquirer.prompt({
                 type: 'list',
-                name: 'chosenComponent',
+                name: 'chosen',
                 message: 'Select the component you want to use',
                 choices: components.map(comp => comp.name)
               })
+              
+              // hämta komponent-data
+              const componentData = components.find(comp => comp.name === chosen)
 
-              // här borde vi kolla om min frame har children och isf om man vill skapa egna komponenter för dessa
+              // kolla om frame har children och fråga isf om man vill skapa egna komponenter för dessa
+              if (componentData.children && componentData.children.length > 1){
+                let { answer } = await inquirer.prompt({
+                  type: 'list',
+                  name: 'answer',
+                  message: 'This component has children. Do you want to:',
+                  choices: ['Use the parent component', 'See the children']
+                })
 
-              // hämta komponent-data och sätt namnet pascal case
-              const componentData = components.find(comp => comp.name === chosenComponent)
-              const componentName = makePascalCase(chosenComponent)
-              // skapa directory för att spara din komponent
-              const jsonDir = './data';
-              if (!fs.existsSync(jsonDir)) {
-                fs.mkdirSync(jsonDir);
+                if (answer.includes('children')){
+                  const components = componentData.children
+                  const { chosen } = await inquirer.prompt({
+                    type: 'list',
+                    name: 'chosen',
+                    message: 'Select the component you want to use',
+                    choices: components.map(comp => comp.name)
+                  })
+
+                  const data = components.find(comp => comp.name === chosen)
+                  await writeFiles(data, chosen)
+
+                } else {
+                  await writeFiles(componentData, chosen)
+                }
+              } else {
+                await writeFiles(componentData, chosen)
               }
-              const componentsDir = `./src/components/${componentName}`
-              if (!fs.existsSync(componentsDir)) {
-                  fs.mkdirSync(componentsDir, { recursive: true });
-              }
-              // namnge dina filer
-              const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
-              const componentFilePath = path.join(componentsDir, `${componentName}.jsx`)
-              const styleFilePath = path.join(componentsDir, `styles.module.css`)
-              // skapa dina filer
-              await writeAndFormatFile(jsonFilePath, JSON.stringify(componentData), 'json')
-              await writeAndFormatFile(componentFilePath, reactTemplate(componentName), 'babel')
-              const css = await generateCss(componentData)  
-              await writeAndFormatFile(styleFilePath, cssTemplate(css), 'css')
+              
 
             } else {
               console.log('The document ID is not set. Please run "ftc set-document"')
