@@ -1,0 +1,22 @@
+{
+  "name": "figma-to-code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vidar Rehn",
+  "license": "ISC",
+  "bin": {
+    "ftc": "./bin/index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "configstore": "^6.0.0",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1",
+    "open": "^9.1.0",
+    "yargs": "^17.7.1"
+  }
+}
