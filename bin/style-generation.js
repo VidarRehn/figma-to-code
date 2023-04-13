@@ -48,6 +48,25 @@ const getFlex = async (json) => {
   
     return cssString
 }
+
+const getRGBA = (colorObject) => {
+    let {r, g, b, a} = colorObject
+    r = Math.round(r * 255)
+    g = Math.round(g * 255)
+    b = Math.round(b * 255)
+    return `rgba(${r}, ${g}, ${b}, ${a});`
+}
+
+const getBorder = async (json) => {
+    let cssString = ''
+    if (json.cornerRadius){cssString += `border-radius: ${json.cornerRadius}px;`}
+    // här borde det kollas om border verkligen ska vara densamma på alla sidor
+    if (json.strokes.length > 0 ){
+        const stroke = json.strokes[0]
+        cssString += `border: ${json.strokeWeight}px ${stroke.type} ${getRGBA(stroke.color)};`
+    }
+    return cssString
+}
   
 const getBoxModel = async (json) => {
     let cssString = ''
@@ -65,11 +84,7 @@ const getBoxModel = async (json) => {
 const getColor = async (json) => {
     let cssString = ''
     if (json.backgroundColor){
-        let {r, g, b, a} = json.backgroundColor
-        r = Math.round(r * 255)
-        g = Math.round(g * 255)
-        b = Math.round(b * 255)
-        cssString += `background-color: rgba(${r}, ${g}, ${b}, ${a});`
+        cssString += `background-color: ${getRGBA(json.backgroundColor)};`
     }
     return cssString
 }
@@ -79,6 +94,7 @@ export const generateCss = async (json) => {
     cssString += await getFlex(json)
     cssString += await getBoxModel(json)
     cssString += await getColor(json)
+    cssString += await getBorder(json)
 
     return cssString
 }
