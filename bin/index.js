@@ -10,48 +10,41 @@ import inquirer from "inquirer"
 
 import { getExpirationTimestamp, isTokenActive } from "./utils.js"
 import { getOAuthToken, getDocumentFrames } from "./fetch.js"
-import { writeFiles } from "./handlers.js"
+import { generateFiles } from "./handlers.js"
 
 dotenv.config()
 const app = express()
-const config = new Configstore('figma-to-code')
+const config = new Configstore('figma-to-code-cli')
 
 yargs(hideBin(process.argv))
   .command({
     command: 'login',
     describe: 'authenticate Figma',
     handler: async () => {
-        app.listen(5500)            
-        const authUrl = `https://www.figma.com/oauth?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&scope=file_read&state=:state&response_type=code`
-        const browser = open(authUrl)
-        // om browser stängs så måste vi exitta processen
-        app.get('/callback.html', async (req, res) => {
-          try {
-            const code = req.query.code
-            const data = await getOAuthToken(code)
-            const userAccess = {
-              token: data.access_token,
-              expiry: await getExpirationTimestamp(data.expires_in)
-            } 
-            // här skulle jag gärna stänga browsern automatiskt, alternativt routa till en schysst "tack för att du loggat in"-sida
-            config.set({userAccess})
-            process.exit()
-          } catch (err) {
-            console.log(err)
-            process.exit()
-          }
-        })
+      app.listen(5500)            
+      const authUrl = `https://www.figma.com/oauth?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&scope=file_read&state=:state&response_type=code`
+      const browser = open(authUrl)
+      app.get('/callback.html', async (req, res) => {
+        try {
+          const code = req.query.code
+          const data = await getOAuthToken(code)
+          const userAccess = {
+            token: data.access_token,
+            expiry: getExpirationTimestamp(data.expires_in)
+          } 
+          config.set({userAccess})
+          process.exit()
+        } catch (err) {
+          throw new Error('Could not authenticate Figma.')
+        }
+      })
     }
-  }).parse()
-
-yargs(hideBin(process.argv))
+  })
   .command({
       command: 'clear',
       describe: 'clear config',
       handler: () => config.clear()
-  }).parse()
-
-yargs(hideBin(process.argv))
+  })
   .command({
       command: 'set-document',
       describe: 'Set the Figma document you would like to access',
@@ -65,9 +58,7 @@ yargs(hideBin(process.argv))
         })
         config.set({documentId})
       }
-  }).parse()
-
-yargs(hideBin(process.argv))
+  })
   .command({
       command: 'list',
       describe: 'get your Figma components',
@@ -109,13 +100,13 @@ yargs(hideBin(process.argv))
                   })
 
                   const data = components.find(comp => comp.name === chosen)
-                  await writeFiles(data, chosen)
+                  await generateFiles(data, chosen)
 
                 } else {
-                  await writeFiles(componentData, chosen)
+                  await generateFiles(componentData, chosen)
                 }
               } else {
-                await writeFiles(componentData, chosen)
+                await generateFiles(componentData, chosen)
               }
               
 
