@@ -1,3 +1,4 @@
+import { makePascalCase } from "./utils.js"
 
 export const reactTemplate = (componentName) => {
     return (`
@@ -5,7 +6,7 @@ export const reactTemplate = (componentName) => {
 
     const ${componentName} = (props) => {
         return (
-            <div className={styles.container}>
+            <div className={styles.${makePascalCase(componentName)}}>
                 <p>testing testing</p>
             </div>
         )

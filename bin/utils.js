@@ -9,6 +9,17 @@ export const makePascalCase = (string) => {
   return pascalCase;
 }
 
+export const makeKebabCase = (string) => {
+  const separatedWords = string.split("");
+  const kebabCase = separatedWords
+    .map(letter => {
+      if (letter === " ") return "-"
+      else return letter.toLowerCase()
+    })
+    .join("");
+  return kebabCase;
+}
+
 export const createDirectory = async (directory) => {
   try {
     await fs.ensureDir(directory)

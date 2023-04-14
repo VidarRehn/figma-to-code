@@ -1,7 +1,9 @@
 
-export const cssTemplate = (content) => {
+import { makePascalCase } from "./utils.js"
+
+export const cssTemplate = (content, name) => {
     return (`
-    .container {
+    .${name} {
         ${content}
     }
     `)
@@ -55,7 +57,7 @@ const getRGBA = (colorObject) => {
     r = Math.round(r * 255)
     g = Math.round(g * 255)
     b = Math.round(b * 255)
-    return `rgba(${r}, ${g}, ${b}, ${a});`
+    return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
 const getBorder = async (json) => {
@@ -72,23 +74,50 @@ const getBorder = async (json) => {
 const getPadding = async (json) => {
     let cssString = ''
     const {paddingTop, paddingRight, paddingBottom, paddingLeft} = json
-    cssString += `padding: ${paddingTop !== undefined ? paddingTop : 0}px ${paddingRight !== undefined ? paddingRight : 0}px ${paddingBottom !== undefined ? paddingBottom : 0}px ${paddingLeft !== undefined ? paddingLeft : 0}px;`
+    if (paddingTop !== undefined || paddingRight !== undefined || paddingBottom !== undefined || paddingLeft !== undefined){
+        cssString += `padding: ${paddingTop !== undefined ? paddingTop : 0}px ${paddingRight !== undefined ? paddingRight : 0}px ${paddingBottom !== undefined ? paddingBottom : 0}px ${paddingLeft !== undefined ? paddingLeft : 0}px;`
+    }
     return cssString
 }
   
 const getColor = async (json) => {
     let cssString = ''
-    const {color} = json.fills[0]
-    if (color) {cssString += `background-color: ${getRGBA(color)}`}
+    if (json?.fills[0]?.color) {
+        if (json.type === 'TEXT'){
+            cssString += `color: ${getRGBA(json.fills[0].color)};`
+        } else {
+            cssString += `background-color: ${getRGBA(json.fills[0].color)};`
+        }
+    }
     return cssString
 }
-  
-export const generateCss = async (json) => {
-    let cssString = ''
-    cssString += await getFlex(json)
-    cssString += await getPadding(json)
-    cssString += await getColor(json)
-    cssString += await getBorder(json)
 
-    return cssString
+const generateCssPerComponent = async (json) => {
+    const componentName = makePascalCase(json.name)
+    let componentCss = ''
+    componentCss += await getFlex(json)
+    componentCss += await getPadding(json)
+    componentCss += await getColor(json)
+    componentCss += await getBorder(json)
+
+    return (`
+        .${componentName} {
+            ${componentCss}
+        }
+    `)
+}
+  
+export const generateCssFile = async (json) => {
+    let css = ''
+    css += await generateCssPerComponent(json)
+    if (json.children){
+        const children = json.children
+        const childPromises = children.map(async (child) => {
+            return generateCssPerComponent(child)
+        })
+        const childrenCss = await Promise.all(childPromises)
+        css += childrenCss.join('')
+    }
+
+    return css
 }
