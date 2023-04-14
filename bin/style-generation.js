@@ -68,16 +68,10 @@ const getBorder = async (json) => {
     return cssString
 }
   
-const getBoxModel = async (json) => {
+const getPadding = async (json) => {
     let cssString = ''
-  
-    // behövs ev en func för att ge shorthand padding
-  
-    if (json.paddingLeft){cssString += `padding-left: ${json.paddingLeft}px;`}
-    if (json.paddingRight){cssString += `padding-right: ${json.paddingRight}px;`} 
-    if (json.paddingTop){cssString += `padding-top: ${json.paddingTop}px;`} 
-    if (json.paddingBottom){cssString += `padding-bottom: ${json.paddingBottom}px;`}
-  
+    const {paddingTop, paddingRight, paddingBottom, paddingLeft} = json
+    cssString += `padding: ${paddingTop !== undefined ? paddingTop : 0}px ${paddingRight !== undefined ? paddingRight : 0}px ${paddingBottom !== undefined ? paddingBottom : 0}px ${paddingLeft !== undefined ? paddingLeft : 0}px;`
     return cssString
 }
   
@@ -92,7 +86,7 @@ const getColor = async (json) => {
 export const generateCss = async (json) => {
     let cssString = ''
     cssString += await getFlex(json)
-    cssString += await getBoxModel(json)
+    cssString += await getPadding(json)
     cssString += await getColor(json)
     cssString += await getBorder(json)
 
