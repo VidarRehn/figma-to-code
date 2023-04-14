@@ -36,7 +36,8 @@ const generateFiles = async (data, name) => {
   const jsonDir = './data';
   await createDirectory(jsonDir)
 
-  const componentDir = `./src/components/${componentName}`
+  const setup = config.get('setup')
+  const componentDir = setup.projectType === 'React' ? `./src/components/${componentName}` : `./components/${componentName}`
   await createDirectory(componentDir)
 
   const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
