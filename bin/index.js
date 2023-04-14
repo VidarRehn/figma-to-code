@@ -8,7 +8,7 @@ import inquirer from "inquirer"
 import path from 'path'
 
 import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
-import { generateCssFile, cssTemplate } from "./style-generation.js"
+import { generateCssFile } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
 import { initOptions, listOptions, checkForChildren } from "./prompts.js"
 
@@ -32,16 +32,17 @@ const getFigmaFile = async (token, id) => {
 
 const generateFiles = async (data, name) => {
   const componentName = makePascalCase(name)
+  const setup = config.get('setup')
 
   const jsonDir = './data';
   await createDirectory(jsonDir)
 
-  const setup = config.get('setup')
   const componentDir = setup.projectType === 'React' ? `./src/components/${componentName}` : `./components/${componentName}`
   await createDirectory(componentDir)
 
   const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
-  const componentFilePath = path.join(componentDir, `${componentName}.jsx`)
+  const fileEnding = setup.typescript ? 'tsx' : 'jsx'
+  const componentFilePath = path.join(componentDir, `${componentName}.${fileEnding}`)
   const styleFilePath = path.join(componentDir, `styles.module.css`)
 
   await writeAndFormatFile(jsonFilePath, JSON.stringify(data), 'json')
@@ -93,7 +94,7 @@ yargs(hideBin(process.argv))
       handler: async () => {
         const setup = config.get('setup')
         if (setup) {
-          const {accessToken, documentId, projectType} = setup
+          const {accessToken, documentId} = setup
           const components = await getFigmaFile(accessToken, documentId)
           const answers = await inquirer.prompt(listOptions(components))
           let chosenComponentName = answers.chosenComponent

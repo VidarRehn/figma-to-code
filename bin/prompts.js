@@ -21,7 +21,14 @@ export const initOptions = {
         demandOption: true,
         describe: 'The type of project being built',
         choices: ['React', 'Next']
-        }
+        },
+    typeScript: {
+        message: 'Is your project using Typescript?',
+        type: 'confirm',
+        name: 'typescript',
+        demandOption: true,
+        describe: 'Should we generate jsx or tsx files',
+    }
     // What kind of styling??
     // jsx or tsx?
     };
