@@ -9,40 +9,41 @@ export const cssTemplate = (content) => {
 
 const getFlex = async (json) => {
     let cssString = ''
-  
+    const {layoutMode, primaryAxisAlignItems, counterAxisAlignItems, itemSpacing} = json
+
     //perhaps make below switch statement
   
-    if (json.layoutMode){
+    if (layoutMode){
         cssString += 'display: flex;'
-        if (json.layoutMode === 'HORIZONTAL'){
+        if (layoutMode === 'HORIZONTAL'){
             cssString += 'flex-direction: row;'
-            if (json.primaryAxisAlignItems){
-                if (json.primaryAxisAlignItems === 'CENTER'){
-                    cssString += 'justify-content: center;'
-                } else if (json.primaryAxisAlignItems === 'MAX'){
-                    cssString += 'justify-content: flex-end;'
-                } else if (json.primaryAxisAlignItems === 'SPACE_BETWEEN'){
-                    cssString += 'justify-content: space-between;'
-                } else {
-                    cssString += 'justify-content: flex-start;'
-                }
-            }
-            if (json.counterAxisAlignItems){
-                if (json.counterAxisAlignItems === 'CENTER'){
-                    cssString += 'align-items: center;'
-                } else if (json.counterAxisAlignItems === 'MAX'){
-                    cssString += 'align-items: flex-end;'
-                } else if (json.counterAxisAlignItems === 'SPACE_BETWEEN'){
-                    cssString += 'align-items: space-between;'
-                } else {
-                    cssString += 'align-items: flex-start;'
-                }
-            }
-        } else if (json.layoutMode === 'VERTICAL'){
+        } else if (layoutMode === 'VERTICAL'){
             cssString += 'flex-direction: column;'
         }
-        if (json.itemSpacing){
-            cssString += `gap: ${json.itemSpacing}px;`
+        if (primaryAxisAlignItems){
+            if (primaryAxisAlignItems === 'CENTER'){
+                cssString += 'justify-content: center;'
+            } else if (primaryAxisAlignItems === 'MAX'){
+                cssString += 'justify-content: flex-end;'
+            } else if (primaryAxisAlignItems === 'SPACE_BETWEEN'){
+                cssString += 'justify-content: space-between;'
+            } else {
+                cssString += 'justify-content: flex-start;'
+            }
+        }
+        if (counterAxisAlignItems){
+            if (counterAxisAlignItems === 'CENTER'){
+                cssString += 'align-items: center;'
+            } else if (counterAxisAlignItems === 'MAX'){
+                cssString += 'align-items: flex-end;'
+            } else if (counterAxisAlignItems === 'SPACE_BETWEEN'){
+                cssString += 'align-items: space-between;'
+            } else {
+                cssString += 'align-items: flex-start;'
+            }
+        }
+        if (itemSpacing){
+            cssString += `gap: ${itemSpacing}px;`
         }
     }
   
@@ -77,9 +78,8 @@ const getPadding = async (json) => {
   
 const getColor = async (json) => {
     let cssString = ''
-    if (json.backgroundColor){
-        cssString += `background-color: ${getRGBA(json.backgroundColor)};`
-    }
+    const {color} = json.fills[0]
+    if (color) {cssString += `background-color: ${getRGBA(color)}`}
     return cssString
 }
   
