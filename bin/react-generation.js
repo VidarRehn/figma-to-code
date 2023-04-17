@@ -1,17 +1,36 @@
 import { makePascalCase } from "./utils.js"
 
-export const reactTemplate = (componentName) => {
+export const elementTemplate = (node) => {
+    const type = node.type
+    const name = makePascalCase(node.name)
+    let innerHtml = null
+    if (node.characters){
+        innerHtml = node.characters
+    } 
+    else if (node.children) {
+        innerHtml = node.children.map(child => elementTemplate(child))
+    }
+
+    let codeString = `
+        <${type} className={styles.${name}}>
+            ${innerHtml}
+        </${type}>
+    `
+    return codeString
+}
+
+export const reactTemplate = (componentName, componentData) => {
+    const name = makePascalCase(componentName)
+    const content = elementTemplate(componentData)
     return (`
     import styles from "./styles.module.css"
 
-    const ${componentName} = (props) => {
+    const ${name} = () => {
         return (
-            <div className={styles.${makePascalCase(componentName)}}>
-                <p>testing testing</p>
-            </div>
+            ${content}
         )
     }
 
-    export default ${componentName}
+    export default ${name}
     `)
 }  

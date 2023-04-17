@@ -9,7 +9,7 @@ import path from 'path'
 
 import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
 import { generateCssFile } from "./style-generation.js"
-import { reactTemplate } from "./react-generation.js"
+import { elementTemplate, reactTemplate } from "./react-generation.js"
 import { initOptions, listOptions, checkForChildren } from "./prompts.js"
 
 const config = new Configstore('figma-to-code-cli')
@@ -46,7 +46,7 @@ const generateFiles = async (data, name) => {
   const styleFilePath = path.join(componentDir, `styles.module.css`)
 
   await writeAndFormatFile(jsonFilePath, JSON.stringify(data), 'json')
-  await writeAndFormatFile(componentFilePath, reactTemplate(componentName), 'babel')
+  await writeAndFormatFile(componentFilePath, reactTemplate(componentName, data), 'babel')
 
   const css = await generateCssFile(data)  
   await writeAndFormatFile(styleFilePath, css, 'css')
@@ -104,6 +104,13 @@ yargs(hideBin(process.argv))
           console.log('You need to initialize your project. Run command "ftc init"')
         }
       }
-  }).parse()
+  })
+  .command({
+    command: 'test',
+    describe: 'test',
+    handler: async () => {
+      console.log('test')
+    }
+}).parse()
 
 
