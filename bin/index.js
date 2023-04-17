@@ -9,7 +9,7 @@ import path from 'path'
 
 import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
 import { generateCssFile } from "./style-generation.js"
-import { elementTemplate, reactTemplate } from "./react-generation.js"
+import { reactTemplate } from "./react-generation.js"
 import { initOptions, listOptions, checkForChildren } from "./prompts.js"
 
 const config = new Configstore('figma-to-code-cli')

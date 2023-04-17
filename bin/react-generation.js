@@ -1,20 +1,29 @@
 import { makePascalCase } from "./utils.js"
 
 export const elementTemplate = (node) => {
-    const type = node.type
-    const name = makePascalCase(node.name)
-    let innerHtml = null
+    const {type, name} = node
+
+    let actualType = ''
+    if (name.toLowerCase().includes('button')){
+        actualType = 'button'
+    } else if (type === 'TEXT') {
+        actualType = 'p'
+    } else {
+        actualType = 'div'
+    }
+
+    let innerHtml = ''
     if (node.characters){
         innerHtml = node.characters
     } 
     else if (node.children) {
-        innerHtml = node.children.map(child => elementTemplate(child))
+        innerHtml = node.children.map(child => elementTemplate(child)).join('')
     }
 
     let codeString = `
-        <${type} className={styles.${name}}>
+        <${actualType} className={styles.${makePascalCase(name)}}>
             ${innerHtml}
-        </${type}>
+        </${actualType}>
     `
     return codeString
 }
