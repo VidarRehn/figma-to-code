@@ -107,13 +107,13 @@ const generateCssPerComponent = async (json) => {
     `)
 }
   
-export const generateCssFile = async (json) => {
+export const generateCss = async (json) => {
     let css = ''
     css += await generateCssPerComponent(json)
     if (json.children){
         const children = json.children
         const childPromises = children.map(async (child) => {
-            return generateCssPerComponent(child)
+            return generateCss(child)
         })
         const childrenCss = await Promise.all(childPromises)
         css += childrenCss.join('')

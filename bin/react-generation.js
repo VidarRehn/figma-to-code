@@ -4,7 +4,7 @@ export const elementTemplate = (node) => {
     const {type, name} = node
 
     let actualType = ''
-    if (name.toLowerCase().includes('button')){
+    if (name.toLowerCase().includes('button') && !name.toLowerCase().includes('buttons')){
         actualType = 'button'
     } else if (type === 'TEXT') {
         actualType = 'p'

@@ -8,7 +8,7 @@ import inquirer from "inquirer"
 import path from 'path'
 
 import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
-import { generateCssFile } from "./style-generation.js"
+import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
 import { initOptions, listOptions, checkForChildren } from "./prompts.js"
 
@@ -48,7 +48,7 @@ const generateFiles = async (data, name) => {
   await writeAndFormatFile(jsonFilePath, JSON.stringify(data), 'json')
   await writeAndFormatFile(componentFilePath, reactTemplate(componentName, data), 'babel')
 
-  const css = await generateCssFile(data)  
+  const css = await generateCss(data)  
   await writeAndFormatFile(styleFilePath, css, 'css')
 }
 
