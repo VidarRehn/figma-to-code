@@ -44,6 +44,18 @@ export const initOptions = {
         }
     }
 
+    export const usedComponentsList = (array) => {
+        array.push('All')
+        return {
+            message: 'Select the component you want refresh',
+            type: 'list',
+            name: 'chosenComponent',
+            demandOption: true,
+            describe: 'List of available components',
+            choices: array.map(comp => comp)
+        }
+    }
+
     export const checkForChildren = {
         message: 'This component has children. Do you want to:',
         type: 'list',

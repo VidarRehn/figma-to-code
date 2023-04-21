@@ -10,7 +10,7 @@ import path from 'path'
 import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
-import { initOptions, listOptions, checkForChildren } from "./prompts.js"
+import { initOptions, listOptions, checkForChildren, usedComponentsList } from "./prompts.js"
 
 const config = new Configstore(`figma-to-code-${path.basename(process.cwd())}`)
 
@@ -58,7 +58,7 @@ const handleComponentStore = (componentName) => {
     list.push(componentName)
     config.set('componentList', list)
   } else {
-    config.set('componentList', [])
+    config.set('componentList', [componentName])
   }
 }
 
@@ -122,6 +122,20 @@ yargs(hideBin(process.argv))
     describe: 'test',
     handler: async () => {
       console.log('test')
+    }
+  })
+  .command({
+    command: 'refresh',
+    describe: 'refresh components',
+    handler: async () => {
+      const componentsArray = config.get('componentList')
+      if (componentsArray){
+        const answers = await inquirer.prompt(usedComponentsList(componentsArray))
+        const chosenComponent = answers.chosenComponent
+        console.log(chosenComponent)
+      } else {
+        console.log('You havent used any figma components in your project. Use "ftc list" to see your options.')
+      }
     }
 }).parse()
 
