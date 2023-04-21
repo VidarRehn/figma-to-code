@@ -1,0 +1,93 @@
+.LandingPage {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 120px;
+  padding: 24px 24px 24px 24px;
+}
+
+.CompanyName {
+  color: rgba(0, 0, 0, 1);
+}
+
+.NavMenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 58px;
+}
+
+.HomeLink {
+  color: rgba(0, 0, 0, 1);
+}
+
+.AboutLink {
+  color: rgba(0, 0, 0, 1);
+}
+
+.ContactLink {
+  color: rgba(0, 0, 0, 1);
+}
+
+.SignInButton {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 4px 8px 4px 8px;
+  background-color: rgba(64, 102, 174, 1);
+}
+
+.ButtonText {
+  color: rgba(255, 255, 255, 1);
+}
+
+.Footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 64px;
+  padding: 48px 24px 48px 24px;
+  background-color: rgba(71, 71, 71, 1);
+}
+
+.AddressDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.LegalName {
+  color: rgba(255, 255, 255, 1);
+}
+
+.Street {
+  color: rgba(255, 255, 255, 1);
+}
+
+.SocialMediaNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 31px;
+}
+
+.TwitterLogo {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.FacebookLogo {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.LinkedinLogo {
+  background-color: rgba(255, 255, 255, 1);
+}
