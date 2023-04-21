@@ -60,6 +60,14 @@ const getRGBA = (colorObject) => {
     return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+const getFont = async (json) => {
+    let cssString = ''
+    if (json.style?.fontSize){
+        cssString += `font-size: ${json.style.fontSize}px;`
+    }
+    return cssString
+}
+
 const getBorder = async (json) => {
     let cssString = ''
     if (json.cornerRadius){cssString += `border-radius: ${json.cornerRadius}px;`}
@@ -99,6 +107,7 @@ const generateCssPerComponent = async (json) => {
     componentCss += await getPadding(json)
     componentCss += await getColor(json)
     componentCss += await getBorder(json)
+    componentCss += await getFont(json)
 
     return (`
         .${componentName} {

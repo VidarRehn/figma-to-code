@@ -12,7 +12,7 @@ import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
 import { initOptions, listOptions, checkForChildren } from "./prompts.js"
 
-const config = new Configstore('figma-to-code-cli')
+const config = new Configstore(`figma-to-code-${path.basename(process.cwd())}`)
 
 // functions
 
@@ -52,6 +52,16 @@ const generateFiles = async (data, name) => {
   await writeAndFormatFile(styleFilePath, css, 'css')
 }
 
+const handleComponentStore = (componentName) => {
+  if (config.get('componentList')){
+    let list = config.get('componentList')
+    list.push(componentName)
+    config.set('componentList', list)
+  } else {
+    config.set('componentList', [])
+  }
+}
+
 const chooseComponent = async (componentData, componentName) => {
   if (componentData?.children?.length > 1) {
     const answers = await inquirer.prompt(checkForChildren)
@@ -62,9 +72,11 @@ const chooseComponent = async (componentData, componentName) => {
       await chooseComponent(chosenChildData, chosenChildName)
     } else {
       await generateFiles(componentData, componentName)
+      handleComponentStore(componentName)
     }
   } else {
     await generateFiles(componentData, componentName)
+    handleComponentStore(componentName)
   }
 }
 
