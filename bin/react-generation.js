@@ -54,8 +54,7 @@ const getInnerHtml = (node) => {
     let innerHtml = ''
     if (node.characters){
         innerHtml = node.characters
-    } 
-    else if (node.children) {
+    } else if (node.children) {
         innerHtml = node.children.map(child => elementTemplate(child)).join('')
     }
 
