@@ -20,6 +20,18 @@ export const makeKebabCase = (string) => {
   return kebabCase;
 }
 
+export const getIdFromString = (string) => {
+  const regex = /\((\d+:\d+)\)/
+  const match = regex.exec(string)
+  return match[1]
+}
+
+export const getNameFromString = (string) => {
+  const regex = /^(.*?)\s*\(\d+:\d+\)$/
+  const match = regex.exec(string)
+  return match[1].trim()
+}
+
 export const createDirectory = async (directory) => {
   try {
     await fs.ensureDir(directory)

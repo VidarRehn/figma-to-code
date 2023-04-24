@@ -45,14 +45,14 @@ export const initOptions = {
     }
 
     export const usedComponentsList = (array) => {
-        array.push('All')
+        // array.push('All')
         return {
             message: 'Select the component you want refresh',
             type: 'list',
             name: 'chosenComponent',
             demandOption: true,
             describe: 'List of available components',
-            choices: array.map(comp => comp)
+            choices: array.map(comp => `${comp.name} (${comp.id})`)
         }
     }
 
@@ -63,4 +63,12 @@ export const initOptions = {
         demandOption: true,
         describe: 'Generate component based on parent or children',
         choices: ['Use the parent', 'See children components']
+    }
+
+    export const confirmRegeneration = {
+        message: 'Please be aware that this will overwrite any changes you may have done locally. Are you sure you want to continue?',
+        type: 'confirm',
+        name: 'overwrite',
+        demandOption: true,
+        describe: 'Confirm whether to overwrite existing files',
     }

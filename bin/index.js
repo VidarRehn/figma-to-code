@@ -7,10 +7,10 @@ import Configstore from "configstore"
 import inquirer from "inquirer"
 import path from 'path'
 
-import { makePascalCase, createDirectory, writeAndFormatFile } from "./utils.js"
+import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString } from "./utils.js"
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
-import { initOptions, listOptions, checkForChildren, usedComponentsList } from "./prompts.js"
+import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration } from "./prompts.js"
 
 const config = new Configstore(`figma-to-code-${path.basename(process.cwd())}`)
 
@@ -25,6 +25,20 @@ const getFigmaFile = async (token, id) => {
     })
     const data = await response.json()
     return data.document.children[0].children
+  } catch (error) {
+    throw new Error(`Unable to get Figma file: ${error}`)
+  }
+}
+
+const getSingleNode = async (token, key, nodeId) => {
+  try {
+    const response = await fetch(`https://api.figma.com/v1/files/${key}/nodes?ids=${nodeId}`, {
+        headers: {
+            "X-Figma-Token": token
+        }
+    })
+    const data = await response.json()
+    return data.nodes[nodeId].document
   } catch (error) {
     throw new Error(`Unable to get Figma file: ${error}`)
   }
@@ -52,13 +66,19 @@ const generateFiles = async (data, name) => {
   await writeAndFormatFile(styleFilePath, css, 'css')
 }
 
-const handleComponentStore = (componentName) => {
+const handleComponentStore = (componentData) => {
   if (config.get('componentList')){
     let list = config.get('componentList')
-    list.push(componentName)
+    list.push({
+      name: componentData.name,
+      id: componentData.id
+    })
     config.set('componentList', list)
   } else {
-    config.set('componentList', [componentName])
+    config.set('componentList', [{
+      name: componentData.name,
+      id: componentData.id
+    }])
   }
 }
 
@@ -72,11 +92,11 @@ const chooseComponent = async (componentData, componentName) => {
       await chooseComponent(chosenChildData, chosenChildName)
     } else {
       await generateFiles(componentData, componentName)
-      handleComponentStore(componentName)
+      handleComponentStore(componentData)
     }
   } else {
     await generateFiles(componentData, componentName)
-    handleComponentStore(componentName)
+    handleComponentStore(componentData)
   }
 }
 
@@ -132,7 +152,17 @@ yargs(hideBin(process.argv))
       if (componentsArray){
         const answers = await inquirer.prompt(usedComponentsList(componentsArray))
         const chosenComponent = answers.chosenComponent
-        console.log(chosenComponent)
+        const confirm = await inquirer.prompt(confirmRegeneration)
+        if (confirm.overwrite){
+          const setup = config.get('setup')
+          if (setup){
+            const nodeId = getIdFromString(chosenComponent)
+            const chosenComponentName = getNameFromString(chosenComponent)
+            const {accessToken, documentId} = setup
+            const node = await getSingleNode(accessToken, documentId, nodeId)
+            await generateFiles(node, chosenComponentName)
+          }
+        }
       } else {
         console.log('You havent used any figma components in your project. Use "ftc list" to see your options.')
       }
