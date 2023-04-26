@@ -32,6 +32,10 @@ export const getNameFromString = (string) => {
   return match[1].trim()
 }
 
+export const checkIfIdExists = (array, id) => {
+  return array.some(obj => obj.id === id)
+}
+
 export const createDirectory = async (directory) => {
   try {
     await fs.ensureDir(directory)

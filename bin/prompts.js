@@ -40,19 +40,25 @@ export const initOptions = {
             name: 'chosenComponent',
             demandOption: true,
             describe: 'List of available components',
-            choices: array.map(comp => comp.name)
+            choices: array.map(comp => `${comp.name} (${comp.id})`)
         }
     }
 
     export const usedComponentsList = (array) => {
-        // array.push('All')
+        array.push('All')
         return {
             message: 'Select the component you want refresh',
             type: 'list',
             name: 'chosenComponent',
             demandOption: true,
             describe: 'List of available components',
-            choices: array.map(comp => `${comp.name} (${comp.id})`)
+            choices: array.map(comp => {
+                if (comp.id){
+                    return `${comp.name} (${comp.id})`
+                } else {
+                    return comp
+                }
+            })
         }
     }
 

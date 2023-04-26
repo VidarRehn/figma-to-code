@@ -7,9 +7,9 @@ import Configstore from "configstore"
 import inquirer from "inquirer"
 import path from 'path'
 
-import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString } from "./utils.js"
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
+import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists } from "./utils.js"
 import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration } from "./prompts.js"
 
 // function to create a config-store in users drive to save variables
@@ -74,11 +74,14 @@ const generateFiles = async (data, name) => {
 const handleComponentStore = (componentData) => {
   if (config.get('componentList')){
     let list = config.get('componentList')
-    list.push({
+    let obj = {
       name: componentData.name,
       id: componentData.id
-    })
-    config.set('componentList', list)
+    }
+    if (!checkIfIdExists(list, componentData.id)){
+      list.push(obj)
+      config.set('componentList', list)
+    }
   } else {
     config.set('componentList', [{
       name: componentData.name,
@@ -95,7 +98,7 @@ const chooseComponent = async (componentData, componentName) => {
     if (answers.childrenOrParent.includes('children')) {
       // list the children
       const answers = await inquirer.prompt(listOptions(componentData.children))
-      const chosenChildName = answers.chosenComponent
+      const chosenChildName = getNameFromString(answers.chosenComponent)
       const chosenChildData = componentData.children.find(comp => comp.name === chosenChildName)
       // if also the child has children, repeat the process
       await chooseComponent(chosenChildData, chosenChildName)
@@ -147,8 +150,8 @@ yargs(hideBin(process.argv))
           const components = await getFigmaFile(accessToken, documentId)
           // list the Figma design nodes(components) in the terminal
           const answers = await inquirer.prompt(listOptions(components))
-          // save user answer
-          let chosenComponentName = answers.chosenComponent
+          // save user answer without the id
+          let chosenComponentName = getNameFromString(answers.chosenComponent)
           // find data based on users answer
           let chosenComponentData = components.find(comp => comp.name === chosenComponentName)
           // check if design has children and/or generate files
@@ -183,14 +186,24 @@ yargs(hideBin(process.argv))
         if (confirm.overwrite){
           const setup = config.get('setup')
           if (setup){
-            const nodeId = getIdFromString(chosenComponent)
-            const chosenComponentName = getNameFromString(chosenComponent)
             // get Figma access token, document id etc from config-store
             const {accessToken, documentId} = setup
-            // fetch data for chosen component
-            const node = await getSingleNode(accessToken, documentId, nodeId)
-            // generate new files
-            await generateFiles(node, chosenComponentName)
+            if (chosenComponent === 'All'){
+              // remove 'All' from array of options
+              componentsArray.pop()
+              // fetch data and generate files for each component
+              componentsArray.forEach(async (comp) => {
+                const node = await getSingleNode(accessToken, documentId, comp.id)
+                await generateFiles(node, comp.name)
+              })
+            } else {
+              const nodeId = getIdFromString(chosenComponent)
+              const chosenComponentName = getNameFromString(chosenComponent)
+              // fetch data for chosen component
+              const node = await getSingleNode(accessToken, documentId, nodeId)
+              // generate new files
+              await generateFiles(node, chosenComponentName)
+            }
           }
         }
       } else {
