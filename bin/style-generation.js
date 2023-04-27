@@ -1,6 +1,7 @@
 
 import { makePascalCase, removeDollarSignSubString } from "./utils.js"
 
+// function to return a css code-string
 export const cssTemplate = (content, name) => {
     return (`
     .${name} {
@@ -9,6 +10,7 @@ export const cssTemplate = (content, name) => {
     `)
 }
 
+// function to return css flex variables if auto layout activated in Figma
 const getFlex = async (json) => {
     let cssString = ''
     const {layoutMode, primaryAxisAlignItems, counterAxisAlignItems, itemSpacing} = json
@@ -52,6 +54,7 @@ const getFlex = async (json) => {
     return cssString
 }
 
+// function to return a color string from a json-object
 const getRGBA = (colorObject) => {
     let {r, g, b, a} = colorObject
     r = Math.round(r * 255)
@@ -60,6 +63,7 @@ const getRGBA = (colorObject) => {
     return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+// function to return font size from json
 const getFont = async (json) => {
     let cssString = ''
     if (json.style?.fontSize){
@@ -68,6 +72,7 @@ const getFont = async (json) => {
     return cssString
 }
 
+// function to check if border exists
 const getBorder = async (json) => {
     let cssString = ''
     if (json.cornerRadius){cssString += `border-radius: ${json.cornerRadius}px;`}
@@ -79,6 +84,7 @@ const getBorder = async (json) => {
     return cssString
 }
   
+// function to get element padding
 const getPadding = async (json) => {
     let cssString = ''
     const {paddingTop, paddingRight, paddingBottom, paddingLeft} = json
@@ -87,7 +93,8 @@ const getPadding = async (json) => {
     }
     return cssString
 }
-  
+ 
+// function to return color and background color css variables
 const getColor = async (json) => {
     let cssString = ''
     if (json?.fills[0]?.color) {
@@ -100,6 +107,7 @@ const getColor = async (json) => {
     return cssString
 }
 
+// main function to run on each figma-component and return css-code based on json from Figma
 const generateCssPerComponent = async (json) => {
     const name = removeDollarSignSubString(json.name)
     const componentName = makePascalCase(name)

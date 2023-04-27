@@ -30,7 +30,6 @@ export const initOptions = {
         describe: 'Should we generate jsx or tsx files',
     }
     // What kind of styling??
-    // jsx or tsx?
     };
 
     export const listOptions = (array) => {
