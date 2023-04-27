@@ -53,3 +53,9 @@ export const writeAndFormatFile = async (filePath, content, fileType) => {
     throw new Error(`Failed to write file ${filePath}: ${err.message}`)
   }
 }
+
+export const removeDollarSignSubString = (string) => {
+  const regex = /\$[a-zA-Z]+/g;
+  const match = string.match(regex);
+  return match ? string.replace(match[0], '').trim() : string
+}

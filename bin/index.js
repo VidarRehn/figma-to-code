@@ -9,7 +9,7 @@ import path from 'path'
 
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
-import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists } from "./utils.js"
+import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists, removeDollarSignSubString } from "./utils.js"
 import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration } from "./prompts.js"
 
 // function to create a config-store in users drive to save variables
@@ -99,9 +99,10 @@ const chooseComponent = async (componentData, componentName) => {
       // list the children
       const answers = await inquirer.prompt(listOptions(componentData.children))
       const chosenChildName = getNameFromString(answers.chosenComponent)
+      const nameWithoutSubString = removeDollarSignSubString(chosenChildName)
       const chosenChildData = componentData.children.find(comp => comp.name === chosenChildName)
       // if also the child has children, repeat the process
-      await chooseComponent(chosenChildData, chosenChildName)
+      await chooseComponent(chosenChildData, nameWithoutSubString)
     } else {
       await generateFiles(componentData, componentName)
       handleComponentStore(componentData)
@@ -152,10 +153,11 @@ yargs(hideBin(process.argv))
           const answers = await inquirer.prompt(listOptions(components))
           // save user answer without the id
           let chosenComponentName = getNameFromString(answers.chosenComponent)
+          let nameWithoutSubString = removeDollarSignSubString(chosenComponentName)
           // find data based on users answer
           let chosenComponentData = components.find(comp => comp.name === chosenComponentName)
           // check if design has children and/or generate files
-          await chooseComponent(chosenComponentData, chosenComponentName)
+          await chooseComponent(chosenComponentData, nameWithoutSubString)
         } else {
           // if no Figma Access token, Document ID etc, ask the user to initialize their project
           console.log('You need to initialize your project. Run command "ftc init"')
@@ -193,8 +195,9 @@ yargs(hideBin(process.argv))
               componentsArray.pop()
               // fetch data and generate files for each component
               componentsArray.forEach(async (comp) => {
+                const nameWithoutSubString = removeDollarSignSubString(comp.name)
                 const node = await getSingleNode(accessToken, documentId, comp.id)
-                await generateFiles(node, comp.name)
+                await generateFiles(node, nameWithoutSubString)
               })
             } else {
               const nodeId = getIdFromString(chosenComponent)
