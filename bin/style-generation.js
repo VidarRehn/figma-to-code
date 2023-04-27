@@ -1,5 +1,5 @@
 
-import { makePascalCase } from "./utils.js"
+import { makePascalCase, removeDollarSignSubString } from "./utils.js"
 
 export const cssTemplate = (content, name) => {
     return (`
@@ -101,7 +101,8 @@ const getColor = async (json) => {
 }
 
 const generateCssPerComponent = async (json) => {
-    const componentName = makePascalCase(json.name)
+    const name = removeDollarSignSubString(json.name)
+    const componentName = makePascalCase(name)
     let componentCss = ''
     componentCss += await getFlex(json)
     componentCss += await getPadding(json)

@@ -202,10 +202,11 @@ yargs(hideBin(process.argv))
             } else {
               const nodeId = getIdFromString(chosenComponent)
               const chosenComponentName = getNameFromString(chosenComponent)
+              const nameWithoutSubString = removeDollarSignSubString(chosenComponentName)
               // fetch data for chosen component
               const node = await getSingleNode(accessToken, documentId, nodeId)
               // generate new files
-              await generateFiles(node, chosenComponentName)
+              await generateFiles(node, nameWithoutSubString)
             }
           }
         }

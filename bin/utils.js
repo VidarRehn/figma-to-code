@@ -55,7 +55,7 @@ export const writeAndFormatFile = async (filePath, content, fileType) => {
 }
 
 export const removeDollarSignSubString = (string) => {
-  const regex = /\$[a-zA-Z]+/g;
+  const regex = /\$[a-zA-Z]+\S*/
   const match = string.match(regex);
   return match ? string.replace(match[0], '').trim() : string
 }
