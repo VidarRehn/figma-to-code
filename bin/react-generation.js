@@ -19,12 +19,17 @@ const getInnerHtml = (node) => {
 }
 
 export const elementTemplate = (node) => {
+    let ref = ''
     const name = removeDollarSignSubString(node.name)
     const element = getElementType(node)
+
+    if (element === 'a') ref = 'href="#"' 
+    if (element === 'img') ref = 'src=""'
+    
     const innerHtml = getInnerHtml(node)
 
     let codeString = `
-        <${element} className={styles.${makePascalCase(name)}}>
+        <${element} ${ref} className={styles.${makePascalCase(name)}}>
             ${innerHtml}
         </${element}>
     `
