@@ -107,6 +107,22 @@ const getColor = async (json) => {
     return cssString
 }
 
+// function to return box shadow css
+const getBoxShadow = async (json) => {
+    let cssString = ''
+    const effectsArray = json.effects
+    if (effectsArray.length > 0){
+        let dropShadowJson = effectsArray.find(effect => effect.type === 'DROP_SHADOW')
+        const color = getRGBA(dropShadowJson.color)
+        const xValue = dropShadowJson.offset.x
+        const yValue = dropShadowJson.offset.y
+        const radius = dropShadowJson.radius
+        const spread = dropShadowJson.spread ? `${dropShadowJson.spread}px` : null
+        cssString += `box-shadow: ${xValue}px ${yValue}px ${radius}px ${spread} ${color};`
+    }
+    return cssString
+}
+
 // main function to run on each figma-component and return css-code based on json from Figma
 const generateCssPerComponent = async (json) => {
     const name = removeDollarSignSubString(json.name)
@@ -117,6 +133,7 @@ const generateCssPerComponent = async (json) => {
     componentCss += await getColor(json)
     componentCss += await getBorder(json)
     componentCss += await getFont(json)
+    componentCss += await getBoxShadow(json)
 
     return (`
         .${componentName} {
