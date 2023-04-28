@@ -34,7 +34,7 @@ Your *Figma Access Token* can be found via these steps:
 4. Click Create new token.
 5. A token will be generated. Copy the token (this will only be possible once so make sure that you keep it stored somewhere where you can return to it later)
 
-Your ***Document ID*** can be read from any Figma file URL. For example in: https://www.figma.com/file/12345/my-design, the ***Document ID*** is 12345.
+Your *Document ID* can be read from any Figma file URL. For example in: https://www.figma.com/file/12345/my-design, the ***Document ID*** is 12345.
 
 ### **Getting your designs**
 To generate a component, run:
