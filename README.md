@@ -16,7 +16,7 @@ npm install figma-to-code --save-dev
 
 ## **Usage**
 
-After installing figma-to-code, you can run the CLI using the **ftc** command.
+After installing figma-to-code, you can run the CLI using the **ftc** command inside your React/Next project.
 
 ### **Initialization**
 Before you can use figma-to-code, you need to initialize the project. Run below prompt in the terminal.
@@ -35,6 +35,8 @@ Your *Figma Access Token* can be found via these steps:
 5. A token will be generated. Copy the token (this will only be possible once so make sure that you keep it stored somewhere where you can return to it later)
 
 Your *Document ID* can be read from any Figma file URL. For example in: https://www.figma.com/file/12345/my-design, the ***Document ID*** is 12345.
+
+The choice between whether you are in a React or Next project will decide whether files are generated inside ./src/components (React) or ./components (Next).
 
 ### **Getting your designs**
 To see a list of your design, run:
