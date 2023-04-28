@@ -117,7 +117,7 @@ const getBoxShadow = async (json) => {
         const xValue = dropShadowJson.offset.x
         const yValue = dropShadowJson.offset.y
         const radius = dropShadowJson.radius
-        const spread = dropShadowJson.spread ? `${dropShadowJson.spread}px` : null
+        const spread = dropShadowJson.spread ? `${dropShadowJson.spread}px` : '0px'
         cssString += `box-shadow: ${xValue}px ${yValue}px ${radius}px ${spread} ${color};`
     }
     return cssString
