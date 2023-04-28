@@ -11,6 +11,13 @@
   "bin": {
     "ftc": "./bin/index.js"
   },
+  "keywords": [
+    "cli",
+    "figma",
+    "react",
+    "next",
+    "node"
+  ],
   "type": "module",
   "dependencies": {
     "configstore": "^6.0.0",
