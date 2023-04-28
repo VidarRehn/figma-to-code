@@ -9,7 +9,7 @@ import path from 'path'
 
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
-import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists, removeDollarSignSubString } from "./utils.js"
+import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists, removeDollarSignSubString, checkIfComponentExistsInFile } from "./utils.js"
 import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration } from "./prompts.js"
 
 // function to create a config-store in users drive to save variables
@@ -169,6 +169,30 @@ yargs(hideBin(process.argv))
     describe: 'test',
     handler: async () => {
       console.log('test')
+    }
+  })
+  .command({
+    command: 'get <arg>',
+    describe: 'console logs string in command (arg)',
+    handler: async (argv) => {
+      const setup = config.get('setup')
+      if (setup) {
+        const {accessToken, documentId} = setup
+        const components = await getFigmaFile(accessToken, documentId)
+        const matchingComponents = checkIfComponentExistsInFile(components[0], argv.arg)
+        if (matchingComponents.length > 0){
+          const answers = await inquirer.prompt(listOptions(matchingComponents))
+          let chosenComponentName = getNameFromString(answers.chosenComponent)
+          console.log(chosenComponentName)
+          let nameWithoutSubString = removeDollarSignSubString(chosenComponentName)
+          let chosenComponentData = matchingComponents.find(comp => comp.name === chosenComponentName)
+          await generateFiles(chosenComponentData, nameWithoutSubString)
+        } else {
+          console.log(`There are no designs matching "${argv.arg}"`)
+        }
+      } else {
+        console.log('You need to initialize your project. Run command "ftc init"')
+      }
     }
   })
   .command({

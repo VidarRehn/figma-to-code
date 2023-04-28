@@ -37,7 +37,7 @@ Your *Figma Access Token* can be found via these steps:
 Your *Document ID* can be read from any Figma file URL. For example in: https://www.figma.com/file/12345/my-design, the ***Document ID*** is 12345.
 
 ### **Getting your designs**
-To generate a component, run:
+To see a list of your design, run:
 
 ```
 ftc list
@@ -47,6 +47,14 @@ This will list all the top-level components of your Figma document.
 Choose the component you want to generate, and figma-to-code will automatically create a new jsx-component in your project as well as a styles module. 
 
 If you choose a component that itself contains child-components you will be asked whether to generate code for the top level component (parent) or to see a list of its children. 
+
+### **Get a specific design**
+To generate a specific design, you can search by entering a string that should be included in your design name. Run:
+
+```
+ftc get <string>
+```
+This will list all the Figma frames where the name includes your search-string. Select the design you want to use.
 
 ### **Regenerating Components**
 If you make changes to your Figma designs, you can update your project files using figma-to-code.
