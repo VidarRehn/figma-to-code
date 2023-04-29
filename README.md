@@ -81,3 +81,27 @@ If you want to remove project setup (access token, document ID, etc), run:
 ```
 ftc clear
 ```
+
+## **Best practice**
+
+### **Naming & Semantic HTML**
+
+It is important that you give names to your frames in Figma as that will decide the name of the component as well as the class for which the element will be styled. 
+
+The element type will be a div unless otherwise stated in the name. To define the type, use $ followed by the element type you want generate
+
+For example, namning a frame in Figma "action button $button" will generate a JSX file looking like below.
+
+```JSX
+import styles from "./styles.module.css";
+
+const ActionButton = () => {
+    return (
+        <button className={styles.ActionButton}>
+            innerHtml
+        </button>
+    )
+}
+
+export default ActionButton
+```
