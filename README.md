@@ -88,9 +88,13 @@ ftc clear
 
 It is important that you give names to your frames in Figma as that will decide the name of the component as well as the class for which the element will be styled. 
 
-The element type will be a div unless otherwise stated in the name. To define the type, use $ followed by the element type you want generate
+The element type will be a div unless otherwise stated in the name. To define the type, use $ followed by the element type you want generate (this will not be taken into consideration when naming the component)
 
-For example, namning a frame in Figma "action button $button" will generate a JSX file looking like below.
+For example, lets say you have a Figma design like below:
+
+![Screenshot](./assets/ActionButton.jpg)
+
+This will generate a JSX file like this
 
 ```JSX
 import styles from "./styles.module.css";
@@ -98,10 +102,23 @@ import styles from "./styles.module.css";
 const ActionButton = () => {
     return (
         <button className={styles.ActionButton}>
-            innerHtml
+            <span className={styled.ButtonText}>Click Here</span>
         </button>
     )
 }
 
 export default ActionButton
+```
+And a CSS-module style sheet like this.
+```CSS
+.ActionButton {
+    background-color: rgba(79, 139, 255, 1);
+    padding: 8px 16px 8px 16px;
+    border-radius: 12px;
+}
+
+.ButtonText {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 1)
+}
 ```
