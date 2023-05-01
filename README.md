@@ -90,9 +90,9 @@ It is important that you give names to your frames in Figma as that will decide 
 
 The element type will be a div unless otherwise stated in the name. To define the type, use $ followed by the element type you want generate (this will not be taken into consideration when naming the component)
 
-For example, lets say you have a Figma design like below:
+For example, lets say you have a Figma design like the one below:
 
-![Screenshot](./assets/ActionButton.jpg)
+<img src="./assets/ActionButton.jpg" alt="screenshot from Figma">
 
 This will generate a JSX file like this
 
