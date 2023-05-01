@@ -58,8 +58,7 @@ const generateFiles = async (data, name) => {
   await createDirectory(componentDir)
   // set the file names
   const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
-  const fileEnding = setup.typescript ? 'tsx' : 'jsx'
-  const componentFilePath = path.join(componentDir, `${componentName}.${fileEnding}`)
+  const componentFilePath = path.join(componentDir, `${componentName}.jsx`)
   const styleFilePath = path.join(componentDir, `styles.module.css`)
   // write the json and jsx files and format them using prettier
   await writeAndFormatFile(jsonFilePath, JSON.stringify(data), 'json')

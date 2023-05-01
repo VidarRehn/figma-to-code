@@ -1,6 +1,6 @@
 {
   "name": "figma-to-code",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A CLI tool for accessing Figma Designs and turning them into React components via the terminal.",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,10 @@
   },
   "author": "Vidar Rehn",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VidarRehn/figma-to-code"
+  },
   "bin": {
     "ftc": "./bin/index.js"
   },
