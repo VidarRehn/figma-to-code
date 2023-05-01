@@ -10,7 +10,7 @@ import path from 'path'
 import { generateCss } from "./style-generation.js"
 import { reactTemplate } from "./react-generation.js"
 import { makePascalCase, createDirectory, writeAndFormatFile, getIdFromString, getNameFromString, checkIfIdExists, removeDollarSignSubString, checkIfComponentExistsInFile } from "./utils.js"
-import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration } from "./prompts.js"
+import { initOptions, listOptions, checkForChildren, usedComponentsList, confirmRegeneration, changeDoc } from "./prompts.js"
 
 // function to create a config-store in users drive to save variables
 const config = new Configstore(`figma-to-code-${path.basename(process.cwd())}`)
@@ -169,6 +169,14 @@ yargs(hideBin(process.argv))
     describe: 'test',
     handler: async () => {
       console.log('test')
+    }
+  })
+  .command({
+    command: 'change-doc',
+    describe: 'change the Figma Document ID',
+    handler: async () => {
+      const {documentId} = await inquirer.prompt(changeDoc)
+      config.set('setup.documentId', documentId)
     }
   })
   .command({

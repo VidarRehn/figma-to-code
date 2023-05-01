@@ -1,4 +1,12 @@
 
+export const changeDoc = {
+    message: 'Please enter your Figma Document ID',
+    name: 'documentId',
+    demandOption: true,
+    describe: 'Change the Figma Document ID',
+    type: 'string'
+}
+
 export const initOptions = {
     accessToken: {
         message: 'What is your Figma Access Token?',
