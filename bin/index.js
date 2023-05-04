@@ -194,6 +194,7 @@ yargs(hideBin(process.argv))
           let nameWithoutSubString = removeDollarSignSubString(chosenComponentName)
           let chosenComponentData = matchingComponents.find(comp => comp.name === chosenComponentName)
           await generateFiles(chosenComponentData, nameWithoutSubString)
+          handleComponentStore(chosenComponentData)
         } else {
           console.log(`There are no designs matching "${argv.arg}"`)
         }
