@@ -97,12 +97,21 @@ const getPadding = async (json) => {
 // function to return color and background color css variables
 const getColor = async (json) => {
     let cssString = ''
-    if (json?.fills[0]?.color) {
+    if (json?.fills[0]?.type === 'SOLID') {
         if (json.type === 'TEXT'){
             cssString += `color: ${getRGBA(json.fills[0].color)};`
         } else {
             cssString += `background-color: ${getRGBA(json.fills[0].color)};`
         }
+    } else if (json?.fills[0]?.type === 'GRADIENT_LINEAR'){
+        const colorOne = getRGBA(json.fills[0].gradientStops.find(gradient => gradient.position === 0).color)
+        const colorTwo = getRGBA(json.fills[0].gradientStops.find(gradient => gradient.position === 1).color) 
+        const firstHandle = json.fills[0].gradientHandlePositions[0]
+        const lastHandle = json.fills[0].gradientHandlePositions[json.fills[0].gradientHandlePositions.length - 1]
+        const x = lastHandle.x - firstHandle.x
+        const y = lastHandle.y - firstHandle.y
+        const angle = Math.atan2(y, x) * 180 / Math.PI;
+        cssString += `background: linear-gradient(${Math.floor(angle)}deg, ${colorOne}, ${colorTwo});`
     }
     return cssString
 }
