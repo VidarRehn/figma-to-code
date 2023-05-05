@@ -112,6 +112,9 @@ const getColor = async (json) => {
         const y = lastHandle.y - firstHandle.y
         const angle = Math.atan2(y, x) * 180 / Math.PI;
         cssString += `background: linear-gradient(${Math.floor(angle)}deg, ${colorOne}, ${colorTwo});`
+    } else if (json?.fills[0]?.type === 'IMAGE'){
+        // check if we can get image url from Figma
+        cssString += `background: url();`
     }
     return cssString
 }
