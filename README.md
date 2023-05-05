@@ -84,6 +84,10 @@ ftc clear
 
 ## **Best practice**
 
+### **Component size**
+
+figma-to-code works best with smaller components/frames. For example, instead of generating a JSX file for your entire landing page, you may want to generate a JSX file for your header, your footer, your main etc separately.
+
 ### **Naming & Semantic HTML**
 
 It is important that you give names to your frames in Figma as that will decide the name of the component as well as the class for which the element will be styled. 
@@ -122,3 +126,41 @@ And a CSS-module style sheet like this.
     color: rgba(255, 255, 255, 1)
 }
 ```
+### **Global CSS**
+
+To get the best effect out of figma-to-code I suggest adding a global.css like below:
+
+```css
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+}
+```
+
+## **Limitations**
+
+### **Positioning**
+
+figma-to-code uses Figma's auto-layout and turns in into flex display CSS values. Neither grid nor absolute positioning is currently supported.
+
+### **Gradients**
+
+figma-to-code can currently handle gradients between two colors where the colors are positioned at the far end of each gradient handle bar.
+
+### **Fonts & images**
+
+Font styles and images are not supported and therefore need to be separately imported into your code.
