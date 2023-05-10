@@ -104,10 +104,12 @@ const chooseComponent = async (componentData, componentName) => {
       await chooseComponent(chosenChildData, nameWithoutSubString)
     } else {
       await generateFiles(componentData, componentName)
+      console.log('Files succesfully generated')
       handleComponentStore(componentData)
     }
   } else {
     await generateFiles(componentData, componentName)
+    console.log('Files succesfully generated')
     handleComponentStore(componentData)
   }
 }
@@ -128,6 +130,7 @@ yargs(hideBin(process.argv))
       });
       // save setup-object in the config-store on the users drive
       config.set({setup})
+      console.log('Configuration data successfully saved')
     }
   })
   .command({
@@ -135,7 +138,10 @@ yargs(hideBin(process.argv))
       command: 'clear',
       describe: 'clear config',
       // clear the config-store (removing access token, document id etc) 
-      handler: () => config.clear()
+      handler: () => {
+        config.clear()
+        console.log('Configuration data successfully removed')
+      }
   })
   .command({
       //prompt "ftc list"
@@ -194,6 +200,7 @@ yargs(hideBin(process.argv))
           let nameWithoutSubString = removeDollarSignSubString(chosenComponentName)
           let chosenComponentData = matchingComponents.find(comp => comp.name === chosenComponentName)
           await generateFiles(chosenComponentData, nameWithoutSubString)
+          console.log('Files succesfully generated')
           handleComponentStore(chosenComponentData)
         } else {
           console.log(`There are no designs matching "${argv.arg}"`)
@@ -230,6 +237,7 @@ yargs(hideBin(process.argv))
                 const nameWithoutSubString = removeDollarSignSubString(comp.name)
                 const node = await getSingleNode(accessToken, documentId, comp.id)
                 await generateFiles(node, nameWithoutSubString)
+                console.log('Files sucessfully refreshed')
               })
             } else {
               const nodeId = getIdFromString(chosenComponent)
@@ -239,6 +247,7 @@ yargs(hideBin(process.argv))
               const node = await getSingleNode(accessToken, documentId, nodeId)
               // generate new files
               await generateFiles(node, nameWithoutSubString)
+              console.log('File sucessfully refreshed')
             }
           }
         }
