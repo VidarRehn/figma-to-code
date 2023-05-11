@@ -194,7 +194,7 @@ yargs(hideBin(process.argv))
         // get Figma file
         const components = await getFigmaFile(accessToken, documentId)
         // check if there are frames within the Figma File that matches your name argument
-        const matchingComponents = checkIfComponentExistsInFile(components[0], argv.arg)
+        const matchingComponents = checkIfComponentExistsInFile(components, argv.arg)
         if (matchingComponents.length > 0){
           // list any matching frames and receive user choice
           const answers = await inquirer.prompt(listOptions(matchingComponents))

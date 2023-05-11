@@ -67,18 +67,19 @@ export const writeAndFormatFile = async (filePath, content, fileType) => {
 }
 
 // function to take a Figma file json and return any object where the name includes a specified string
-export const checkIfComponentExistsInFile = (obj, string) => {
+export const checkIfComponentExistsInFile = (array, string) => {
   let results = [];
   
-  if (obj.name.includes(string)) {
-    results.push(obj);
-  }
-  
-  if (obj.children) {
-    obj.children.forEach(child => {
-      results = results.concat(checkIfComponentExistsInFile(child, string));
-    });
-  }
+  array.forEach(obj => {
+    if (obj.name.includes(string)) {
+      results.push(obj);
+    }
+
+    if (obj.children) {
+      const childResults = checkIfComponentExistsInFile(obj.children, string);
+      results = results.concat(childResults);
+    }
+  });
   
   return results;
 }
