@@ -1,6 +1,6 @@
 {
   "name": "figma-to-code",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A CLI tool for accessing Figma Designs and turning them into React components via the terminal.",
   "main": "index.js",
   "scripts": {
