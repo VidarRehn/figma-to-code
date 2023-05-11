@@ -51,13 +51,11 @@ const generateFiles = async (data, name) => {
   const componentName = makePascalCase(name)
   // get project configuration from configStore
   const setup = config.get('setup')
-  // create directories for the files
-  const jsonDir = './data';
-  await createDirectory(jsonDir)
+  // create directory for the files
   const componentDir = setup.projectType === 'React' ? `./src/components/${componentName}` : `./components/${componentName}`
   await createDirectory(componentDir)
   // set the file names
-  const jsonFilePath = path.join(jsonDir, `${componentName}.json`);
+  const jsonFilePath = path.join(componentDir, `${componentName}.json`);
   const componentFilePath = path.join(componentDir, `${componentName}.jsx`)
   const styleFilePath = path.join(componentDir, `styles.module.css`)
   // write the json and jsx files and format them using prettier
