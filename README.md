@@ -9,14 +9,10 @@ You can install figma-to-code globally using npm:
 ```
 npm install -g figma-to-code
 ```
-Or locally in your project:
-```
-npm install figma-to-code --save-dev
-```
 
 ## **Usage**
 
-After installing figma-to-code, you can run the CLI using the **ftc** command inside your React/Next project.
+After installing figma-to-code, you can run the CLI using the **ftc** command inside the root of your React/Next project. To learn how to create a React/Next project please visit https://react.dev/learn/start-a-new-react-project
 
 ### **Initialization**
 Before you can use figma-to-code, you need to initialize the project. Run below prompt in the terminal.
